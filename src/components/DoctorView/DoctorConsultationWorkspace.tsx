@@ -101,54 +101,47 @@ export const DoctorConsultationWorkspace: React.FC = () => {
     <div className="space-y-6">
       
       {/* Clinician Session Header Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white rounded-3xl p-6 shadow-xl border border-indigo-900/50">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-white/10">
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300">
-              <Stethoscope className="w-6 h-6" />
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+              <Stethoscope className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold tracking-tight">
-                  Consultation Workspace — Dr. Priya Sharma
+                <h2 className="text-lg font-bold text-slate-900 tracking-tight">
+                  Dr. Priya Sharma • OPD Cardiology Consultation
                 </h2>
-                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">
-                  Authorized OPD Session
+                <span className="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded-md font-semibold">
+                  Scope: {activeDoctorToken?.scope.toUpperCase() || 'FULL RECORD'}
                 </span>
               </div>
-              <p className="text-xs text-indigo-200 mt-0.5">
-                Patient: <strong className="text-white">{activePatient.name}</strong> ({activePatient.age}y, {activePatient.gender}, {activePatient.bloodGroup}) • ABHA: {activePatient.abhaId}
+              <p className="text-xs text-slate-500 mt-0.5">
+                Consulting: <strong className="text-slate-800">{activePatient.name}</strong> ({activePatient.age}y, {activePatient.gender}, {activePatient.bloodGroup}) • ABHA: {activePatient.abhaId}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="text-right hidden sm:block">
-              <span className="text-[10px] text-slate-400 block uppercase font-mono">Scope Granted</span>
-              <span className="text-xs font-bold text-indigo-300 font-mono">
-                {activeDoctorToken?.scope.toUpperCase() || 'FULL RECORD'}
-              </span>
-            </div>
-
             <button
               onClick={lockDoctorSession}
-              className="flex items-center gap-1.5 bg-rose-600/90 hover:bg-rose-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-md shadow-rose-600/20"
+              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all"
             >
               <Lock className="w-3.5 h-3.5" />
-              <span>End & Lock Consultation</span>
+              <span>Close Consultation</span>
             </button>
           </div>
         </div>
 
-        {/* Real-time Patient Clinical Alerts (High-Risk Banner) */}
+        {/* Real-time Patient Clinical Alerts (Clean pills) */}
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
           {/* Allergies Alert */}
-          <div className="bg-rose-500/10 border border-rose-500/30 rounded-xl p-3">
-            <span className="text-rose-400 font-bold flex items-center gap-1.5 mb-1 text-[11px] uppercase tracking-wider">
-              <ShieldAlert className="w-3.5 h-3.5" />
+          <div className="bg-rose-50/70 border border-rose-200/80 rounded-xl p-3">
+            <span className="text-rose-800 font-bold flex items-center gap-1.5 mb-1 text-[11px] uppercase tracking-wider">
+              <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
               Documented Allergies
             </span>
-            <ul className="text-rose-200 text-xs font-semibold space-y-0.5">
+            <ul className="text-rose-900 text-xs font-medium space-y-0.5">
               {activePatient.allergies.map((a, i) => (
                 <li key={i}>• {a.allergen} ({a.reaction})</li>
               ))}
@@ -156,24 +149,24 @@ export const DoctorConsultationWorkspace: React.FC = () => {
           </div>
 
           {/* Active Baseline Regimen */}
-          <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-3">
-            <span className="text-blue-300 font-bold flex items-center gap-1.5 mb-1 text-[11px] uppercase tracking-wider">
-              <Pill className="w-3.5 h-3.5" />
-              Current Baseline Regimen
+          <div className="bg-blue-50/60 border border-blue-200/80 rounded-xl p-3">
+            <span className="text-blue-800 font-bold flex items-center gap-1.5 mb-1 text-[11px] uppercase tracking-wider">
+              <Pill className="w-3.5 h-3.5 text-blue-600" />
+              Current Medications
             </span>
-            <p className="text-blue-100 text-xs">
+            <p className="text-blue-900 text-xs">
               {activePatient.activeMedications.map(m => m.name).join(', ')}
             </p>
           </div>
 
           {/* Diagnostic Context */}
-          <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3">
-            <span className="text-amber-300 font-bold flex items-center gap-1.5 mb-1 text-[11px] uppercase tracking-wider">
-              <Activity className="w-3.5 h-3.5" />
-              Latest Lab Context (Apollo)
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
+            <span className="text-slate-700 font-bold flex items-center gap-1.5 mb-1 text-[11px] uppercase tracking-wider">
+              <Activity className="w-3.5 h-3.5 text-slate-500" />
+              Recent Diagnostics (Apollo)
             </span>
-            <p className="text-amber-100 text-xs">
-              HbA1c: <strong>{activePatient.recentVitals.hba1c}</strong> • BP: <strong>{activePatient.recentVitals.bloodPressure}</strong> • Creatinine: 1.05 mg/dL
+            <p className="text-slate-700 text-xs">
+              HbA1c: <strong>{activePatient.recentVitals.hba1c}</strong> • BP: <strong>{activePatient.recentVitals.bloodPressure}</strong>
             </p>
           </div>
         </div>
