@@ -5,6 +5,7 @@ import { PatientDashboard } from './components/PatientView/PatientDashboard';
 import { DoctorAccessGate } from './components/DoctorView/DoctorAccessGate';
 import { DoctorConsultationWorkspace } from './components/DoctorView/DoctorConsultationWorkspace';
 import { EmergencyPortal } from './components/EmergencyView/EmergencyPortal';
+import { LandingPage } from './components/LandingPage/LandingPage';
 
 // Modals
 import { ConsentManagerModal } from './components/Modals/ConsentManagerModal';
@@ -27,10 +28,13 @@ const AppContent: React.FC = () => {
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Patient Portal View */}
+        {/* Proper Landing & Portal Gateway Page */}
+        {role === 'landing' && <LandingPage />}
+
+        {/* Mode 1: Patient Portal (Personal Health Records) */}
         {role === 'patient' && <PatientDashboard />}
 
-        {/* Doctor Clinic OPD View */}
+        {/* Mode 2: Doctor Clinic OPD (View history + add new records) */}
         {role === 'doctor' && (
           <div>
             {!isDoctorUnlocked ? (
@@ -41,7 +45,7 @@ const AppContent: React.FC = () => {
           </div>
         )}
 
-        {/* Emergency Triage View */}
+        {/* Emergency First Responder (Trauma HUD) */}
         {role === 'er' && <EmergencyPortal />}
 
       </main>
@@ -67,6 +71,13 @@ const AppContent: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-4 text-slate-600">
+            <button 
+              onClick={() => setRole('landing')} 
+              className={`hover:text-blue-600 transition-colors ${role === 'landing' ? 'font-bold text-blue-600' : ''}`}
+            >
+              Home
+            </button>
+            <span>•</span>
             <button 
               onClick={() => setRole('patient')} 
               className={`hover:text-blue-600 transition-colors ${role === 'patient' ? 'font-bold text-blue-600' : ''}`}

@@ -3,11 +3,13 @@ import { Patient, MedicalRecord, ConsentToken, AuditLogEntry, ActiveMedication, 
 import { INITIAL_PATIENTS, INITIAL_RECORDS, INITIAL_CONSENT_TOKENS, INITIAL_AUDIT_LOGS } from '../data/mockData';
 import confetti from 'canvas-confetti';
 
-export type UserRole = 'patient' | 'doctor' | 'er';
+export type UserRole = 'landing' | 'patient' | 'doctor' | 'er';
 
 interface AppContextType {
   role: UserRole;
   setRole: (role: UserRole) => void;
+  loginAsPatient: (patientId: string) => void;
+  logoutToLanding: () => void;
   patients: Patient[];
   activePatient: Patient;
   switchPatient: (patientId: string) => void;
@@ -65,7 +67,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [role, setRole] = useState<UserRole>('patient');
+  const [role, setRole] = useState<UserRole>('landing');
   const [patients, setPatients] = useState<Patient[]>(() => {
     const saved = localStorage.getItem('medisync_patients');
     return saved ? JSON.parse(saved) : INITIAL_PATIENTS;
@@ -136,6 +138,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setIsDoctorUnlocked(false);
     setActiveDoctorToken(null);
     showNotification('info', `Switched active patient to ${patients.find(p => p.id === patientId)?.name}`);
+  };
+
+  const loginAsPatient = (patientId: string) => {
+    setActivePatientId(patientId);
+    setRole('patient');
+    setIsDoctorUnlocked(false);
+    setActiveDoctorToken(null);
+    const pName = patients.find(p => p.id === patientId)?.name || 'Patient';
+    showNotification('success', `Logged in as ${pName}! Viewing personal health history.`);
+  };
+
+  const logoutToLanding = () => {
+    setRole('landing');
+    setIsDoctorUnlocked(false);
+    setActiveDoctorToken(null);
+    showNotification('info', 'Logged out to Home Portal.');
   };
 
   // Generate a cryptographically simulated 6-digit consent token
@@ -444,6 +462,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       value={{
         role,
         setRole,
+        loginAsPatient,
+        logoutToLanding,
         patients,
         activePatient,
         switchPatient,

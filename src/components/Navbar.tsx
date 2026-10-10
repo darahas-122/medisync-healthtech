@@ -10,13 +10,16 @@ import {
   KeyRound, 
   ChevronDown,
   Sparkles,
-  Bell
+  Bell,
+  Home,
+  LogOut
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { 
     role, 
     setRole, 
+    logoutToLanding,
     patients, 
     activePatient, 
     switchPatient, 
@@ -38,14 +41,18 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Brand Logo & Name */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
+          {/* Brand Logo & Name (Clickable to go home) */}
+          <button 
+            onClick={logoutToLanding}
+            className="flex items-center gap-3 text-left group"
+            title="Return to MediSync Home"
+          >
+            <div className="w-9 h-9 rounded-xl bg-blue-600 group-hover:bg-blue-700 flex items-center justify-center text-white shadow-sm transition-colors">
               <Activity className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-lg text-slate-900 tracking-tight">
+                <span className="font-bold text-lg text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
                   MediSync
                 </span>
                 <span className="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md hidden sm:inline">
@@ -53,32 +60,44 @@ export const Navbar: React.FC = () => {
                 </span>
               </div>
             </div>
-          </div>
+          </button>
 
-          {/* Clean Segmented Navigation (Role Switcher) */}
+          {/* Clean Segmented Navigation (Role / Mode Switcher) */}
           <div className="bg-slate-100 p-1 rounded-xl flex items-center gap-1">
             <button
+              onClick={logoutToLanding}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                role === 'landing'
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Home className="w-3.5 h-3.5 text-slate-500" />
+              <span>Home</span>
+            </button>
+
+            <button
               onClick={() => setRole('patient')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 role === 'patient'
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <User className="w-3.5 h-3.5 text-blue-600" />
-              <span>Patient</span>
+              <span>Patient Mode</span>
             </button>
 
             <button
               onClick={() => setRole('doctor')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all relative ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all relative ${
                 role === 'doctor'
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Stethoscope className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Doctor OPD</span>
+              <span>Doctor Mode</span>
               {isDoctorUnlocked && (
                 <span className="w-2 h-2 rounded-full bg-emerald-500 absolute -top-0.5 -right-0.5 ring-2 ring-white"></span>
               )}
@@ -86,91 +105,107 @@ export const Navbar: React.FC = () => {
 
             <button
               onClick={() => setRole('er')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 role === 'er'
                   ? 'bg-red-600 text-white shadow-sm'
                   : 'text-red-700 hover:bg-red-50'
               }`}
             >
               <AlertTriangle className="w-3.5 h-3.5" />
-              <span>Emergency (ER)</span>
+              <span className="hidden sm:inline">Emergency</span>
             </button>
           </div>
 
           {/* Right Tools: Patient Switcher & Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
             
-            {/* Patient Switcher */}
-            <div className="relative group">
-              <div className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-xl px-2.5 py-1.5 cursor-pointer text-xs transition-colors">
-                <img
-                  src={activePatient.avatar}
-                  alt={activePatient.name}
-                  className="w-6 h-6 rounded-full object-cover"
-                />
-                <span className="font-semibold text-slate-800 hidden md:inline">{activePatient.name}</span>
-                <span className="text-[10px] text-slate-500 hidden lg:inline font-mono">({activePatient.bloodGroup})</span>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-              </div>
+            {/* If in Patient Mode: Show Patient Switcher & Share button */}
+            {role === 'patient' && (
+              <>
+                <div className="relative group">
+                  <div className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-xl px-2.5 py-1.5 cursor-pointer text-xs transition-colors">
+                    <img
+                      src={activePatient.avatar}
+                      alt={activePatient.name}
+                      className="w-6 h-6 rounded-full object-cover"
+                    />
+                    <span className="font-semibold text-slate-800 hidden md:inline">{activePatient.name}</span>
+                    <span className="text-[10px] text-slate-500 hidden lg:inline font-mono">({activePatient.bloodGroup})</span>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  </div>
 
-              {/* Dropdown */}
-              <div className="absolute right-0 mt-1 w-52 bg-white border border-slate-200 rounded-xl shadow-lg py-1 hidden group-hover:block z-50">
-                <div className="px-3 py-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                  Select Patient
-                </div>
-                {patients.map(p => (
-                  <button
-                    key={p.id}
-                    onClick={() => switchPatient(p.id)}
-                    className={`w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-slate-50 text-xs transition-colors ${
-                      p.id === activePatient.id ? 'bg-blue-50 font-semibold text-blue-700' : 'text-slate-700'
-                    }`}
-                  >
-                    <img src={p.avatar} alt={p.name} className="w-6 h-6 rounded-full object-cover" />
-                    <div>
-                      <span>{p.name}</span>
-                      <span className="text-[10px] text-slate-400 block">{p.age}y • {p.bloodGroup}</span>
+                  {/* Dropdown */}
+                  <div className="absolute right-0 mt-1 w-52 bg-white border border-slate-200 rounded-xl shadow-lg py-1 hidden group-hover:block z-50">
+                    <div className="px-3 py-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                      Switch Patient
                     </div>
-                  </button>
-                ))}
-                
-                {/* Register New Patient Button */}
-                <div className="pt-1 mt-1 border-t border-slate-100">
-                  <button
-                    onClick={() => setIsAddPatientModalOpen(true)}
-                    className="w-full px-3 py-2 text-left flex items-center gap-2 hover:bg-blue-50 text-xs font-semibold text-blue-700 transition-colors"
-                  >
-                    <UserPlus className="w-3.5 h-3.5 text-blue-600" />
-                    <span>+ Register New Patient</span>
-                  </button>
+                    {patients.map(p => (
+                      <button
+                        key={p.id}
+                        onClick={() => switchPatient(p.id)}
+                        className={`w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-slate-50 text-xs transition-colors ${
+                          p.id === activePatient.id ? 'bg-blue-50 font-semibold text-blue-700' : 'text-slate-700'
+                        }`}
+                      >
+                        <img src={p.avatar} alt={p.name} className="w-6 h-6 rounded-full object-cover" />
+                        <div>
+                          <span>{p.name}</span>
+                          <span className="text-[10px] text-slate-400 block">{p.age}y • {p.bloodGroup}</span>
+                        </div>
+                      </button>
+                    ))}
+                    
+                    {/* Register New Patient Button */}
+                    <div className="pt-1 mt-1 border-t border-slate-100">
+                      <button
+                        onClick={() => setIsAddPatientModalOpen(true)}
+                        className="w-full px-3 py-2 text-left flex items-center gap-2 hover:bg-blue-50 text-xs font-semibold text-blue-700 transition-colors"
+                      >
+                        <UserPlus className="w-3.5 h-3.5 text-blue-600" />
+                        <span>+ Register New Patient</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Share with Doctor PIN */}
-            <button
-              onClick={() => setIsConsentModalOpen(true)}
-              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition-all"
-              title="Generate Scoped 6-Digit Doctor Access PIN"
-            >
-              <KeyRound className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Share Records</span>
-              {activeTokensCount > 0 && (
-                <span className="bg-white/20 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold">
-                  {activeTokensCount}
-                </span>
-              )}
-            </button>
+                {/* Share with Doctor PIN */}
+                <button
+                  onClick={() => setIsConsentModalOpen(true)}
+                  className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition-all"
+                  title="Generate Scoped 6-Digit Doctor Access PIN"
+                >
+                  <KeyRound className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Share Records</span>
+                  {activeTokensCount > 0 && (
+                    <span className="bg-white/20 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold">
+                      {activeTokensCount}
+                    </span>
+                  )}
+                </button>
 
-            {/* Emergency ICE Button */}
-            <button
-              onClick={() => setIsIceModalOpen(true)}
-              className="flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all"
-              title="Open Emergency ICE Pass"
-            >
-              <AlertTriangle className="w-3.5 h-3.5 text-red-600" />
-              <span className="hidden md:inline">ICE Pass</span>
-            </button>
+                {/* Emergency ICE Button */}
+                <button
+                  onClick={() => setIsIceModalOpen(true)}
+                  className="flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all"
+                  title="Open Emergency ICE Pass"
+                >
+                  <AlertTriangle className="w-3.5 h-3.5 text-red-600" />
+                  <span className="hidden md:inline">ICE Pass</span>
+                </button>
+              </>
+            )}
+
+            {/* If in Landing, Doctor, or ER Mode: Quick exit button */}
+            {role !== 'landing' && (
+              <button
+                onClick={logoutToLanding}
+                className="flex items-center gap-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all"
+                title="Exit to Landing Page"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Exit Mode</span>
+              </button>
+            )}
 
             {/* Audit Trail Button */}
             <button
