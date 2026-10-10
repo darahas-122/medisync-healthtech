@@ -4,7 +4,7 @@
 > **24-Hour Web Development Hackathon • IIITDM Kancheepuram**  
 > **Domain:** HealthTech  
 > **Problem Statement:** *Lost in Transit: Fragmented Medical Records and Repeated Care Across Providers*  
-> **Live Demo:** `http://localhost:3000` (Locally running) | Deployable to Vercel / Netlify in 1 click  
+> **Live Demo:** [https://medisync-healthtech.vercel.app/](https://medisync-healthtech.vercel.app/)  
 
 ---
 
