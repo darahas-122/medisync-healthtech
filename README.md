@@ -153,7 +153,7 @@ To satisfy the mandatory public deployment requirement (10% marks):
 * Designed in accordance with Ayushman Bharat Digital Mission (ABDM) and HIPAA principles.
 
 ### 👥 Team Members
-* **Darahas Reddy** ([@darahas-122](https://github.com/darahas-122)) 
+* **S.Darahas Reddy** ([@darahas-122](https://github.com/darahas-122)) 
 * **H.Vamshi** ([@vamshi928](https://github.com/vamshi928))
-
-
+* **Sai Dattatreya Routhu** ([@Dattatreya-Routhu](https://github.com/Dattatreya-Routhu))
+* **J.Arjun Reddy ** ([@arjunreddy2612](https://github.com/arjunreddy2612))
