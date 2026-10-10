@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/Navbar';
+import { PatientLoginGate } from './components/PatientView/PatientLoginGate';
 import { PatientDashboard } from './components/PatientView/PatientDashboard';
 import { DoctorAccessGate } from './components/DoctorView/DoctorAccessGate';
 import { DoctorConsultationWorkspace } from './components/DoctorView/DoctorConsultationWorkspace';
@@ -18,7 +19,7 @@ import { AddPatientModal } from './components/Modals/AddPatientModal';
 import { Activity, ShieldCheck, HeartPulse, Sparkles, ExternalLink, QrCode } from 'lucide-react';
 
 const AppContent: React.FC = () => {
-  const { role, setRole, isDoctorUnlocked, activePatient } = useApp();
+  const { role, setRole, isPatientLoggedIn, isDoctorUnlocked, activePatient } = useApp();
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-blue-600 selection:text-white">
@@ -32,7 +33,15 @@ const AppContent: React.FC = () => {
         {role === 'landing' && <LandingPage />}
 
         {/* Mode 1: Patient Portal (Personal Health Records) */}
-        {role === 'patient' && <PatientDashboard />}
+        {role === 'patient' && (
+          <div>
+            {!isPatientLoggedIn ? (
+              <PatientLoginGate />
+            ) : (
+              <PatientDashboard />
+            )}
+          </div>
+        )}
 
         {/* Mode 2: Doctor Clinic OPD (View history + add new records) */}
         {role === 'doctor' && (

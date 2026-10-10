@@ -80,39 +80,51 @@ export const LandingPage: React.FC = () => {
             </p>
 
             {/* Login as Patient Options */}
-            <div className="mt-5 space-y-2.5">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                Select an account to log in:
-              </span>
-
-              {patients.map(p => (
-                <button
-                  key={p.id}
-                  onClick={() => loginAsPatient(p.id)}
-                  className="w-full p-3 rounded-2xl border border-slate-200 hover:border-blue-400 bg-slate-50/70 hover:bg-blue-50/50 flex items-center justify-between transition-all text-left group/btn"
-                >
-                  <div className="flex items-center gap-3">
-                    <img src={p.avatar} alt={p.name} className="w-9 h-9 rounded-full object-cover border border-slate-200" />
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-900">{p.name} ({p.age}y)</h4>
-                      <p className="text-[11px] text-slate-500 font-mono">Blood: {p.bloodGroup} • {p.chronicConditions[0]?.condition}</p>
-                    </div>
-                  </div>
-                  <span className="flex items-center gap-1 text-xs font-semibold text-blue-600 group-hover/btn:translate-x-0.5 transition-transform">
-                    <span>Log In</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
-                </button>
-              ))}
-
-              {/* Register New Patient */}
+            <div className="mt-5 space-y-3">
               <button
-                onClick={() => setIsAddPatientModalOpen(true)}
-                className="w-full p-3 rounded-2xl border border-dashed border-blue-300 hover:border-blue-500 bg-blue-50/30 hover:bg-blue-50 text-blue-700 font-semibold text-xs flex items-center justify-center gap-2 transition-all"
+                onClick={() => setRole('patient')}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-500/20 transition-all hover:scale-[1.01]"
               >
-                <UserPlus className="w-4 h-4" />
-                <span>+ Register New Patient Profile</span>
+                <span>Enter Patient Portal (Sign-In)</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
+
+              <div className="pt-2">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                  Or 1-Click Demo Sign-In:
+                </span>
+
+                <div className="space-y-2">
+                  {patients.map(p => (
+                    <button
+                      key={p.id}
+                      onClick={() => loginAsPatient(p.id)}
+                      className="w-full p-2.5 rounded-xl border border-slate-200 hover:border-blue-400 bg-slate-50/70 hover:bg-blue-50/50 flex items-center justify-between transition-all text-left group/btn"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <img src={p.avatar} alt={p.name} className="w-8 h-8 rounded-full object-cover border border-slate-200" />
+                        <div>
+                          <h4 className="text-xs font-bold text-slate-900">{p.name} ({p.age}y)</h4>
+                          <p className="text-[10px] text-slate-500 font-mono">ABHA: {p.abhaId}</p>
+                        </div>
+                      </div>
+                      <span className="flex items-center gap-1 text-xs font-semibold text-blue-600 group-hover/btn:translate-x-0.5 transition-transform">
+                        <span>Log In</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </button>
+                  ))}
+
+                  {/* Register New Patient */}
+                  <button
+                    onClick={() => setIsAddPatientModalOpen(true)}
+                    className="w-full p-2.5 rounded-xl border border-dashed border-blue-300 hover:border-blue-500 bg-blue-50/30 hover:bg-blue-50 text-blue-700 font-semibold text-xs flex items-center justify-center gap-2 transition-all"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>+ Register New Patient Profile</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

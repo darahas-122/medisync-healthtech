@@ -19,6 +19,8 @@ export const Navbar: React.FC = () => {
   const { 
     role, 
     setRole, 
+    isPatientLoggedIn,
+    logoutPatient,
     logoutToLanding,
     patients, 
     activePatient, 
@@ -120,7 +122,16 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-2 sm:gap-3">
             
             {/* If in Patient Mode: Show Patient Switcher & Share button */}
-            {role === 'patient' && (
+            {/* If in Patient Mode and not logged in: Show sign-in badge */}
+            {role === 'patient' && !isPatientLoggedIn && (
+              <div className="flex items-center gap-1.5 text-xs text-blue-700 bg-blue-50 border border-blue-200/80 px-2.5 py-1.5 rounded-xl font-medium">
+                <User className="w-3.5 h-3.5 text-blue-600" />
+                <span className="hidden sm:inline">Sign In Required</span>
+              </div>
+            )}
+
+            {/* If in Patient Mode and Logged In: Show Patient Switcher & Action buttons */}
+            {role === 'patient' && isPatientLoggedIn && (
               <>
                 <div className="relative group">
                   <div className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-xl px-2.5 py-1.5 cursor-pointer text-xs transition-colors">
@@ -163,6 +174,17 @@ export const Navbar: React.FC = () => {
                       >
                         <UserPlus className="w-3.5 h-3.5 text-blue-600" />
                         <span>+ Register New Patient</span>
+                      </button>
+                    </div>
+
+                    {/* Log Out Option in Dropdown */}
+                    <div className="pt-1 mt-1 border-t border-slate-100">
+                      <button
+                        onClick={logoutPatient}
+                        className="w-full px-3 py-2 text-left flex items-center gap-2 hover:bg-rose-50 text-xs font-semibold text-rose-600 transition-colors"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        <span>Log Out Patient</span>
                       </button>
                     </div>
                   </div>

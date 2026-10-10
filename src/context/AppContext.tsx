@@ -8,7 +8,10 @@ export type UserRole = 'landing' | 'patient' | 'doctor' | 'er';
 interface AppContextType {
   role: UserRole;
   setRole: (role: UserRole) => void;
+  isPatientLoggedIn: boolean;
+  setIsPatientLoggedIn: (val: boolean) => void;
   loginAsPatient: (patientId: string) => void;
+  logoutPatient: () => void;
   logoutToLanding: () => void;
   patients: Patient[];
   activePatient: Patient;
@@ -89,6 +92,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return saved ? JSON.parse(saved) : INITIAL_AUDIT_LOGS;
   });
 
+  // Patient authentication state
+  const [isPatientLoggedIn, setIsPatientLoggedIn] = useState<boolean>(false);
+
   // Doctor session
   const [isDoctorUnlocked, setIsDoctorUnlocked] = useState<boolean>(false);
   const [activeDoctorToken, setActiveDoctorToken] = useState<ConsentToken | null>(null);
@@ -142,6 +148,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const loginAsPatient = (patientId: string) => {
     setActivePatientId(patientId);
+    setIsPatientLoggedIn(true);
     setRole('patient');
     setIsDoctorUnlocked(false);
     setActiveDoctorToken(null);
@@ -149,8 +156,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showNotification('success', `Logged in as ${pName}! Viewing personal health history.`);
   };
 
+  const logoutPatient = () => {
+    setIsPatientLoggedIn(false);
+    showNotification('info', 'Logged out of Patient Portal.');
+  };
+
   const logoutToLanding = () => {
     setRole('landing');
+    setIsPatientLoggedIn(false);
     setIsDoctorUnlocked(false);
     setActiveDoctorToken(null);
     showNotification('info', 'Logged out to Home Portal.');
@@ -416,6 +429,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     setPatients(prev => [newPatient, ...prev]);
     setActivePatientId(newId);
+    setIsPatientLoggedIn(true);
     setIsDoctorUnlocked(false);
     setActiveDoctorToken(null);
 
@@ -462,7 +476,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       value={{
         role,
         setRole,
+        isPatientLoggedIn,
+        setIsPatientLoggedIn,
         loginAsPatient,
+        logoutPatient,
         logoutToLanding,
         patients,
         activePatient,

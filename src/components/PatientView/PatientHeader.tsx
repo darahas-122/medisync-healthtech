@@ -6,12 +6,14 @@ import {
   ShieldAlert, 
   PhoneCall, 
   Droplet,
-  AlertCircle
+  AlertCircle,
+  LogOut
 } from 'lucide-react';
 
 export const PatientHeader: React.FC = () => {
   const { 
     activePatient, 
+    logoutPatient,
     setIsConsentModalOpen, 
     setIsIceModalOpen, 
     setIsUploadModalOpen 
@@ -86,6 +88,15 @@ export const PatientHeader: React.FC = () => {
           >
             <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
             <span>Emergency ICE</span>
+          </button>
+
+          <button
+            onClick={logoutPatient}
+            className="flex items-center gap-1.5 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 border border-slate-200 hover:border-rose-200 px-3 py-2 rounded-xl font-semibold text-xs transition-all ml-1"
+            title="Log out of Patient Portal"
+          >
+            <LogOut className="w-3.5 h-3.5 text-slate-500 hover:text-rose-600" />
+            <span>Log Out</span>
           </button>
         </div>
       </div>
