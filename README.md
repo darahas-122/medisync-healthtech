@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # 🩺 MediSync — Longitudinal Health Passport & Cross-Provider Care Continuity
 
 > **24-Hour Web Development Hackathon • IIITDM Kancheepuram**  
@@ -152,6 +152,7 @@ To satisfy the mandatory public deployment requirement (10% marks):
 ## 👥 Hackathon Team & Acknowledgments
 * Built for **24-Hour Web Development Hackathon**, IIITDM Kancheepuram.
 * Designed in accordance with Ayushman Bharat Digital Mission (ABDM) and HIPAA principles.
-=======
-# medisync-healthtech
->>>>>>> 47d573ba94ecb119b028be2024752262dfb0a94f
+### 👥 Team Members
+* **Darahas Reddy** ([@darahas-122](https://github.com/darahas-122)) 
+* **H.Vamshi** ([@vamshi928](https://github.com/vamshi928))
+
