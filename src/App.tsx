@@ -12,6 +12,7 @@ import { EmergencyICECardModal } from './components/Modals/EmergencyICECardModal
 import { UploadRecordModal } from './components/Modals/UploadRecordModal';
 import { PreviewAttachmentModal } from './components/Modals/PreviewAttachmentModal';
 import { AuditLogModal } from './components/Modals/AuditLogModal';
+import { AddPatientModal } from './components/Modals/AddPatientModal';
 
 import { Activity, ShieldCheck, HeartPulse, Sparkles, ExternalLink, QrCode } from 'lucide-react';
 
@@ -51,6 +52,7 @@ const AppContent: React.FC = () => {
       <UploadRecordModal />
       <PreviewAttachmentModal />
       <AuditLogModal />
+      <AddPatientModal />
 
       {/* Footer */}
       <footer className="mt-16 bg-white border-t border-slate-200 py-8 text-xs text-slate-500">

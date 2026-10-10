@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { 
   Activity, 
   User, 
+  UserPlus,
   Stethoscope, 
   AlertTriangle, 
   ShieldCheck, 
@@ -24,6 +25,7 @@ export const Navbar: React.FC = () => {
     setIsConsentModalOpen,
     setIsIceModalOpen,
     setIsAuditModalOpen,
+    setIsAddPatientModalOpen,
     notification
   } = useApp();
 
@@ -131,6 +133,17 @@ export const Navbar: React.FC = () => {
                     </div>
                   </button>
                 ))}
+                
+                {/* Register New Patient Button */}
+                <div className="pt-1 mt-1 border-t border-slate-100">
+                  <button
+                    onClick={() => setIsAddPatientModalOpen(true)}
+                    className="w-full px-3 py-2 text-left flex items-center gap-2 hover:bg-blue-50 text-xs font-semibold text-blue-700 transition-colors"
+                  >
+                    <UserPlus className="w-3.5 h-3.5 text-blue-600" />
+                    <span>+ Register New Patient</span>
+                  </button>
+                </div>
               </div>
             </div>
 

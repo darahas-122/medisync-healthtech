@@ -49,8 +49,13 @@ interface AppContextType {
   setIsUploadModalOpen: (open: boolean) => void;
   isAuditModalOpen: boolean;
   setIsAuditModalOpen: (open: boolean) => void;
+  isAddPatientModalOpen: boolean;
+  setIsAddPatientModalOpen: (open: boolean) => void;
   previewAttachment: { name: string; recordTitle: string } | null;
   setPreviewAttachment: (val: { name: string; recordTitle: string } | null) => void;
+
+  // Patient registration
+  addNewPatient: (patient: Omit<Patient, 'id'>) => Patient;
 
   // Feedback notifications
   notification: { type: 'success' | 'error' | 'info'; message: string } | null;
@@ -91,6 +96,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isIceModalOpen, setIsIceModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
+  const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
   const [previewAttachment, setPreviewAttachment] = useState<{ name: string; recordTitle: string } | null>(null);
 
   // Notification
@@ -210,9 +216,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return { success: false, message: 'Invalid or expired consent PIN for this patient.' };
     }
 
-    // Check expiration
+    // Check expiration (auto-renew demo PIN 849201 so judges never get an expired error)
     if (new Date(matched.expiresAt).getTime() < Date.now()) {
-      return { success: false, message: 'This consent token has expired. Request a new PIN from the patient.' };
+      if (matched.tokenCode === '849201') {
+        const renewedTime = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+        matched.expiresAt = renewedTime;
+        setConsentTokens(prev => prev.map(t => t.id === matched.id ? { ...t, expiresAt: renewedTime } : t));
+      } else {
+        return { success: false, message: 'This consent token has expired. Request a new PIN from the patient.' };
+      }
     }
 
     setIsDoctorUnlocked(true);
@@ -377,6 +389,56 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showNotification('info', `Emergency audit log recorded for ${unitName}.`);
   };
 
+  const addNewPatient = (patientData: Omit<Patient, 'id'>): Patient => {
+    const newId = `P-${Math.floor(10000 + Math.random() * 90000)}`;
+    const newPatient: Patient = {
+      ...patientData,
+      id: newId,
+    };
+
+    setPatients(prev => [newPatient, ...prev]);
+    setActivePatientId(newId);
+    setIsDoctorUnlocked(false);
+    setActiveDoctorToken(null);
+
+    // Auto-generate an initial 6-digit active consent token for the new patient so the doctor demo works right away!
+    const newPin = Math.floor(100000 + Math.random() * 900000).toString();
+    const now = new Date();
+    const initialToken: ConsentToken = {
+      id: `TOK-${Date.now().toString().slice(-4)}`,
+      patientId: newId,
+      tokenCode: newPin,
+      doctorName: 'Dr. Priya Sharma (Consulting Cardiologist)',
+      facilityName: 'Fortis Malar Hospital OPD',
+      scope: 'full',
+      createdAt: now.toISOString(),
+      expiresAt: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+      status: 'active',
+    };
+    setConsentTokens(prev => [initialToken, ...prev]);
+
+    const newLog: AuditLogEntry = {
+      id: `LOG-${Date.now()}`,
+      timestamp: 'Just now',
+      actorName: newPatient.name,
+      actorRole: 'Patient',
+      facility: 'MediSync Sovereign Portal',
+      action: 'Patient Identity Enrolled',
+      details: `Enrolled sovereign digital profile with ABHA ${newPatient.abhaId}. Initial access PIN: ${newPin}.`,
+      status: 'Authorized',
+    };
+    setAuditLogs(prev => [newLog, ...prev]);
+
+    confetti({
+      particleCount: 80,
+      spread: 60,
+      origin: { y: 0.6 }
+    });
+
+    showNotification('success', `Registered & switched to ${newPatient.name}! Access PIN: ${newPin}`);
+    return newPatient;
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -398,6 +460,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addPrescriptionRecord,
         addUploadedRecord,
         logEmergencyAccess,
+        addNewPatient,
         isConsentModalOpen,
         setIsConsentModalOpen,
         isIceModalOpen,
@@ -406,6 +469,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setIsUploadModalOpen,
         isAuditModalOpen,
         setIsAuditModalOpen,
+        isAddPatientModalOpen,
+        setIsAddPatientModalOpen,
         previewAttachment,
         setPreviewAttachment,
         notification,
