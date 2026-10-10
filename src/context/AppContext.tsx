@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Patient, MedicalRecord, ConsentToken, AuditLogEntry, ActiveMedication, RecordType } from '../types';
-import { INITIAL_PATIENTS, INITIAL_RECORDS, INITIAL_CONSENT_TOKENS, INITIAL_AUDIT_LOGS } from '../data/mockData';
+import { Patient, MedicalRecord, ConsentToken, AuditLogEntry, ActiveMedication, RecordType, Doctor } from '../types';
+import { INITIAL_PATIENTS, INITIAL_RECORDS, INITIAL_CONSENT_TOKENS, INITIAL_AUDIT_LOGS, INITIAL_DOCTORS } from '../data/mockData';
 import confetti from 'canvas-confetti';
 
 export type UserRole = 'landing' | 'patient' | 'doctor' | 'er';
@@ -21,6 +21,17 @@ interface AppContextType {
   consentTokens: ConsentToken[];
   auditLogs: AuditLogEntry[];
   
+  // Doctor state & management
+  doctors: Doctor[];
+  activeDoctor: Doctor;
+  isDoctorLoggedIn: boolean;
+  setIsDoctorLoggedIn: (val: boolean) => void;
+  loginDoctor: (doctorId: string) => void;
+  logoutDoctor: () => void;
+  addNewDoctor: (doctor: Omit<Doctor, 'id'>) => Doctor;
+  isAddDoctorModalOpen: boolean;
+  setIsAddDoctorModalOpen: (val: boolean) => void;
+
   // Doctor Session state
   isDoctorUnlocked: boolean;
   activeDoctorToken: ConsentToken | null;
@@ -95,6 +106,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Patient authentication state
   const [isPatientLoggedIn, setIsPatientLoggedIn] = useState<boolean>(false);
 
+  // Doctors state
+  const [doctors, setDoctors] = useState<Doctor[]>(() => {
+    const saved = localStorage.getItem('medisync_doctors');
+    return saved ? JSON.parse(saved) : INITIAL_DOCTORS;
+  });
+  const [activeDoctorId, setActiveDoctorId] = useState<string>('DOC-48201');
+  const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState<boolean>(false);
+  const [isAddDoctorModalOpen, setIsAddDoctorModalOpen] = useState<boolean>(false);
+
   // Doctor session
   const [isDoctorUnlocked, setIsDoctorUnlocked] = useState<boolean>(false);
   const [activeDoctorToken, setActiveDoctorToken] = useState<ConsentToken | null>(null);
@@ -116,6 +136,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [patients]);
 
   useEffect(() => {
+    localStorage.setItem('medisync_doctors', JSON.stringify(doctors));
+  }, [doctors]);
+
+  useEffect(() => {
     localStorage.setItem('medisync_records', JSON.stringify(records));
   }, [records]);
 
@@ -135,6 +159,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const activePatient = patients.find(p => p.id === activePatientId) || patients[0];
+  const activeDoctor = doctors.find(d => d.id === activeDoctorId) || doctors[0];
   const activePatientRecords = records
     .filter(r => r.patientId === activePatient.id)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -161,12 +186,43 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showNotification('info', 'Logged out of Patient Portal.');
   };
 
+  const loginDoctor = (doctorId: string) => {
+    setActiveDoctorId(doctorId);
+    setIsDoctorLoggedIn(true);
+    setRole('doctor');
+    const dName = doctors.find(d => d.id === doctorId)?.name || 'Doctor';
+    showNotification('success', `Signed in as ${dName}! Clinical workspace ready.`);
+  };
+
+  const logoutDoctor = () => {
+    setIsDoctorLoggedIn(false);
+    setIsDoctorUnlocked(false);
+    setActiveDoctorToken(null);
+    showNotification('info', 'Logged out of Doctor Clinic.');
+  };
+
+  const addNewDoctor = (doctorData: Omit<Doctor, 'id'>): Doctor => {
+    const newId = `DOC-${Math.floor(10000 + Math.random() * 90000)}`;
+    const newDoctor: Doctor = {
+      ...doctorData,
+      id: newId,
+    };
+    setDoctors(prev => [newDoctor, ...prev]);
+    setActiveDoctorId(newId);
+    setIsDoctorLoggedIn(true);
+    setRole('doctor');
+    confetti({ particleCount: 75, spread: 60 });
+    showNotification('success', `Clinician profile registered! Signed in as ${newDoctor.name}.`);
+    return newDoctor;
+  };
+
   const logoutToLanding = () => {
     setRole('landing');
     setIsPatientLoggedIn(false);
+    setIsDoctorLoggedIn(false);
     setIsDoctorUnlocked(false);
     setActiveDoctorToken(null);
-    showNotification('info', 'Logged out to Home Portal.');
+    showNotification('info', 'Returned to Home Portal.');
   };
 
   // Generate a cryptographically simulated 6-digit consent token
@@ -264,7 +320,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newLog: AuditLogEntry = {
       id: `LOG-${Date.now()}`,
       timestamp: 'Just now',
-      actorName: 'Dr. Priya Sharma',
+      actorName: activeDoctor.name,
       actorRole: 'Doctor',
       facility: matched.facilityName,
       action: 'Doctor Consultation Session Unlocked',
@@ -488,6 +544,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         activePatientRecords,
         consentTokens,
         auditLogs,
+        doctors,
+        activeDoctor,
+        isDoctorLoggedIn,
+        setIsDoctorLoggedIn,
+        loginDoctor,
+        logoutDoctor,
+        addNewDoctor,
         isDoctorUnlocked,
         activeDoctorToken,
         unlockDoctorSession,
@@ -508,6 +571,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setIsAuditModalOpen,
         isAddPatientModalOpen,
         setIsAddPatientModalOpen,
+        isAddDoctorModalOpen,
+        setIsAddDoctorModalOpen,
         previewAttachment,
         setPreviewAttachment,
         notification,

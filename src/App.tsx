@@ -3,6 +3,7 @@ import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/Navbar';
 import { PatientLoginGate } from './components/PatientView/PatientLoginGate';
 import { PatientDashboard } from './components/PatientView/PatientDashboard';
+import { DoctorLoginGate } from './components/DoctorView/DoctorLoginGate';
 import { DoctorAccessGate } from './components/DoctorView/DoctorAccessGate';
 import { DoctorConsultationWorkspace } from './components/DoctorView/DoctorConsultationWorkspace';
 import { EmergencyPortal } from './components/EmergencyView/EmergencyPortal';
@@ -15,11 +16,12 @@ import { UploadRecordModal } from './components/Modals/UploadRecordModal';
 import { PreviewAttachmentModal } from './components/Modals/PreviewAttachmentModal';
 import { AuditLogModal } from './components/Modals/AuditLogModal';
 import { AddPatientModal } from './components/Modals/AddPatientModal';
+import { AddDoctorModal } from './components/Modals/AddDoctorModal';
 
 import { Activity, ShieldCheck, HeartPulse, Sparkles, ExternalLink, QrCode } from 'lucide-react';
 
 const AppContent: React.FC = () => {
-  const { role, setRole, isPatientLoggedIn, isDoctorUnlocked, activePatient } = useApp();
+  const { role, setRole, isPatientLoggedIn, isDoctorLoggedIn, isDoctorUnlocked, activePatient } = useApp();
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-blue-600 selection:text-white">
@@ -46,7 +48,9 @@ const AppContent: React.FC = () => {
         {/* Mode 2: Doctor Clinic OPD (View history + add new records) */}
         {role === 'doctor' && (
           <div>
-            {!isDoctorUnlocked ? (
+            {!isDoctorLoggedIn ? (
+              <DoctorLoginGate />
+            ) : !isDoctorUnlocked ? (
               <DoctorAccessGate />
             ) : (
               <DoctorConsultationWorkspace />
@@ -66,6 +70,7 @@ const AppContent: React.FC = () => {
       <PreviewAttachmentModal />
       <AuditLogModal />
       <AddPatientModal />
+      <AddDoctorModal />
 
       {/* Footer */}
       <footer className="mt-16 bg-white border-t border-slate-200 py-8 text-xs text-slate-500">

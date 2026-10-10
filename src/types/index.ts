@@ -132,3 +132,16 @@ export interface AuditLogEntry {
   details: string;
   status: 'Authorized' | 'Emergency-Bypass' | 'Revoked';
 }
+
+export interface Doctor {
+  id: string;
+  name: string;
+  specialty: string;
+  qualification: string;
+  hospital: string;
+  licenseNumber: string;
+  experienceYears: number;
+  avatar: string;
+  phone: string;
+  email: string;
+}

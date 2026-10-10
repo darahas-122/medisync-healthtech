@@ -17,11 +17,14 @@ import {
   Layers,
   Microscope,
   Info,
-  Check
+  Check,
+  LogOut
 } from 'lucide-react';
 
 export const DoctorConsultationWorkspace: React.FC = () => {
   const { 
+    activeDoctor,
+    logoutDoctor,
     activePatient, 
     activePatientRecords, 
     activeDoctorToken, 
@@ -76,9 +79,9 @@ export const DoctorConsultationWorkspace: React.FC = () => {
     if (!candidateDrug.trim()) return;
 
     addPrescriptionRecord(
-      'Dr. Priya Sharma',
-      'Chief Interventional Cardiologist',
-      'Fortis Malar Hospital OPD',
+      activeDoctor.name,
+      activeDoctor.specialty,
+      activeDoctor.hospital,
       diagnosis,
       consultNotes,
       [
@@ -110,25 +113,35 @@ export const DoctorConsultationWorkspace: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-bold text-slate-900 tracking-tight">
-                  Dr. Priya Sharma • OPD Cardiology Consultation
+                  {activeDoctor.name} • {activeDoctor.specialty} OPD
                 </h2>
                 <span className="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded-md font-semibold">
                   Scope: {activeDoctorToken?.scope.toUpperCase() || 'FULL RECORD'}
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                Consulting: <strong className="text-slate-800">{activePatient.name}</strong> ({activePatient.age}y, {activePatient.gender}, {activePatient.bloodGroup}) • ABHA: {activePatient.abhaId}
+                {activeDoctor.hospital} (Lic: {activeDoctor.licenseNumber}) • Consulting: <strong className="text-slate-800">{activePatient.name}</strong> ({activePatient.age}y, {activePatient.bloodGroup})
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={lockDoctorSession}
-              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all"
+              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-xl transition-all"
+              title="Close patient chart and return to consent PIN gate"
             >
               <Lock className="w-3.5 h-3.5" />
-              <span>Close Consultation</span>
+              <span>Close Chart</span>
+            </button>
+
+            <button
+              onClick={logoutDoctor}
+              className="flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold px-3 py-2 rounded-xl transition-all"
+              title="Log out of doctor clinic mode entirely"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Log Out Doctor</span>
             </button>
           </div>
         </div>

@@ -24,6 +24,9 @@ export const LandingPage: React.FC = () => {
     patients, 
     loginAsPatient, 
     setIsAddPatientModalOpen,
+    doctors,
+    loginDoctor,
+    setIsAddDoctorModalOpen,
     setIsAuditModalOpen
   } = useApp();
 
@@ -157,36 +160,52 @@ export const LandingPage: React.FC = () => {
               Log in as the consulting physician. Enter the patient's 6-digit consent PIN to view all older records across clinics, prevent duplicate diagnostics, and safely write and sign new prescriptions.
             </p>
 
-            {/* Doctor Clinician Card */}
-            <div className="mt-5 p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-sm">
-                  PS
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900">Dr. Priya Sharma, MD, DM</h4>
-                  <p className="text-[11px] text-slate-500">Chief Interventional Cardiologist • Fortis Malar OPD</p>
-                </div>
-              </div>
-
-              <div className="bg-white p-3 rounded-xl border border-slate-200 text-xs text-slate-700 space-y-1">
-                <div className="flex items-center gap-1.5 text-indigo-900 font-semibold">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>View older historical labs & hospital discharge summaries</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-indigo-900 font-semibold">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>Add new records & prescriptions with Drug-Drug Safety Radar</span>
-                </div>
-              </div>
-
+            {/* Doctor Sign-in Options */}
+            <div className="mt-5 space-y-3">
               <button
                 onClick={() => setRole('doctor')}
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-indigo-500/20 transition-all hover:scale-[1.01]"
               >
-                <span>Enter Doctor Clinic Mode</span>
+                <span>Enter Doctor Clinic (Sign-In)</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
+
+              <div className="pt-2">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                  Or 1-Click Demo Clinician Sign-In:
+                </span>
+
+                <div className="space-y-2">
+                  {doctors.map(d => (
+                    <button
+                      key={d.id}
+                      onClick={() => loginDoctor(d.id)}
+                      className="w-full p-2.5 rounded-xl border border-slate-200 hover:border-indigo-400 bg-slate-50/70 hover:bg-indigo-50/50 flex items-center justify-between transition-all text-left group/btn"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <img src={d.avatar} alt={d.name} className="w-8 h-8 rounded-full object-cover border border-slate-200" />
+                        <div>
+                          <h4 className="text-xs font-bold text-slate-900">{d.name}</h4>
+                          <p className="text-[10px] text-slate-500 font-medium">{d.specialty} • {d.hospital.split(' ')[0]}</p>
+                        </div>
+                      </div>
+                      <span className="flex items-center gap-1 text-xs font-semibold text-indigo-600 group-hover/btn:translate-x-0.5 transition-transform">
+                        <span>Log In</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </button>
+                  ))}
+
+                  {/* Register New Doctor Profile */}
+                  <button
+                    onClick={() => setIsAddDoctorModalOpen(true)}
+                    className="w-full p-2.5 rounded-xl border border-dashed border-indigo-300 hover:border-indigo-500 bg-indigo-50/30 hover:bg-indigo-50 text-indigo-700 font-semibold text-xs flex items-center justify-center gap-2 transition-all"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>+ Register New Doctor Profile</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

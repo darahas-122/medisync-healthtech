@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { KeyRound, ShieldAlert, Stethoscope, ArrowRight } from 'lucide-react';
+import { KeyRound, ShieldAlert, Stethoscope, ArrowRight, LogOut, CheckCircle2 } from 'lucide-react';
 
 export const DoctorAccessGate: React.FC = () => {
   const { 
+    activeDoctor,
+    logoutDoctor,
     activePatient, 
     consentTokens, 
     unlockDoctorSession, 
@@ -33,20 +35,54 @@ export const DoctorAccessGate: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto my-12 p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 shadow-sm text-center">
+    <div className="max-w-lg mx-auto my-8 sm:my-12 space-y-4">
       
-      {/* Icon */}
-      <div className="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-3">
-        <Stethoscope className="w-6 h-6" />
+      {/* Clinician Identity Banner */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <img
+            src={activeDoctor.avatar}
+            alt={activeDoctor.name}
+            className="w-10 h-10 rounded-xl object-cover border border-slate-200"
+          />
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-900">{activeDoctor.name}</span>
+              <span className="text-[10px] bg-indigo-50 text-indigo-700 font-semibold px-1.5 py-0.2 rounded border border-indigo-100">
+                {activeDoctor.qualification}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500">
+              {activeDoctor.specialty} • {activeDoctor.hospital}
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={logoutDoctor}
+          className="flex items-center gap-1.5 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 hover:border-rose-200 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0"
+          title="Log out clinician session"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span>Log Out</span>
+        </button>
       </div>
 
-      <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-        Doctor Consultation Authorization
-      </h2>
+      {/* Patient Consent Gate Card */}
+      <div className="p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 shadow-sm text-center">
+        
+        {/* Icon */}
+        <div className="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-3">
+          <KeyRound className="w-6 h-6" />
+        </div>
 
-      <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-        Enter the 6-digit access PIN provided by <strong className="text-slate-700">{activePatient.name}</strong> to view history and prescribe safely.
-      </p>
+        <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+          Patient Chart Authorization
+        </h2>
+
+        <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+          Enter the 6-digit access PIN issued by patient <strong className="text-slate-800">{activePatient.name}</strong> to unlock longitudinal records and activate safe prescribing.
+        </p>
 
       {/* PIN Input */}
       <div className="mt-6">
@@ -110,6 +146,7 @@ export const DoctorAccessGate: React.FC = () => {
         </div>
       )}
 
+      </div>
     </div>
   );
 };

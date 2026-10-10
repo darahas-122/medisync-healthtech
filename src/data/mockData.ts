@@ -1,4 +1,4 @@
-import { Patient, MedicalRecord, ConsentToken, AuditLogEntry } from '../types';
+import { Patient, MedicalRecord, ConsentToken, AuditLogEntry, Doctor } from '../types';
 
 export const INITIAL_PATIENTS: Patient[] = [
   {
@@ -469,5 +469,44 @@ export const INITIAL_AUDIT_LOGS: AuditLogEntry[] = [
     action: 'Emergency SOS Bypass Triage',
     details: 'Bypassed PIN via Emergency ICE protocol due to acute chest distress. Blood group and allergy alerts accessed.',
     status: 'Emergency-Bypass',
+  },
+];
+
+export const INITIAL_DOCTORS: Doctor[] = [
+  {
+    id: 'DOC-48201',
+    name: 'Dr. Priya Sharma',
+    specialty: 'Interventional Cardiology',
+    qualification: 'MD, DM (Cardiology), FACC',
+    hospital: 'Fortis Malar Hospital OPD',
+    licenseNumber: 'NMC-TN-2014-48201',
+    experienceYears: 14,
+    avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&auto=format&fit=crop&q=80',
+    phone: '+91 98402 11920',
+    email: 'dr.priya.sharma@fortismalar.org',
+  },
+  {
+    id: 'DOC-19234',
+    name: 'Dr. Arvind Swaminathan',
+    specialty: 'Internal Medicine / Diabetology',
+    qualification: 'MBBS, MD (General Medicine)',
+    hospital: 'Apollo Greams Road OPD',
+    licenseNumber: 'NMC-TN-2011-19234',
+    experienceYears: 17,
+    avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80',
+    phone: '+91 98410 44210',
+    email: 'arvind.swaminathan@apollohospitals.com',
+  },
+  {
+    id: 'DOC-30419',
+    name: 'Dr. Meera Nambiar',
+    specialty: 'Pulmonology & Critical Care',
+    qualification: 'MD (Pulmonary Medicine), FCCP',
+    hospital: 'MIOT International Hospital',
+    licenseNumber: 'NMC-TN-2018-30419',
+    experienceYears: 11,
+    avatar: 'https://images.unsplash.com/photo-1594824813501-489064c5d57b?w=150&auto=format&fit=crop&q=80',
+    phone: '+91 98840 98211',
+    email: 'meera.nambiar@miotinternational.com',
   },
 ];

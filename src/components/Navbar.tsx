@@ -21,6 +21,9 @@ export const Navbar: React.FC = () => {
     setRole, 
     isPatientLoggedIn,
     logoutPatient,
+    activeDoctor,
+    isDoctorLoggedIn,
+    logoutDoctor,
     logoutToLanding,
     patients, 
     activePatient, 
@@ -215,6 +218,34 @@ export const Navbar: React.FC = () => {
                   <span className="hidden md:inline">ICE Pass</span>
                 </button>
               </>
+            )}
+
+            {/* If in Doctor Mode and not logged in: Show sign-in badge */}
+            {role === 'doctor' && !isDoctorLoggedIn && (
+              <div className="flex items-center gap-1.5 text-xs text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2.5 py-1.5 rounded-xl font-medium">
+                <Stethoscope className="w-3.5 h-3.5 text-indigo-600" />
+                <span className="hidden sm:inline">Clinician Sign-In Required</span>
+              </div>
+            )}
+
+            {/* If in Doctor Mode and Logged In: Show Doctor Profile & Log out */}
+            {role === 'doctor' && isDoctorLoggedIn && (
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 bg-indigo-50/70 border border-indigo-200/80 rounded-xl px-2.5 py-1.5 text-xs">
+                  <img src={activeDoctor.avatar} alt={activeDoctor.name} className="w-6 h-6 rounded-full object-cover" />
+                  <span className="font-semibold text-indigo-900 hidden md:inline">{activeDoctor.name}</span>
+                  <span className="text-[10px] text-indigo-600 hidden lg:inline font-medium">({activeDoctor.specialty.split(' ')[0]})</span>
+                </div>
+
+                <button
+                  onClick={logoutDoctor}
+                  className="flex items-center gap-1 text-slate-500 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 border border-slate-200 hover:border-rose-200 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-colors"
+                  title="Log out of Doctor Clinic"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Log Out</span>
+                </button>
+              </div>
             )}
 
             {/* If in Landing, Doctor, or ER Mode: Quick exit button */}
